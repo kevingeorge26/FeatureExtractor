@@ -1,1 +1,21 @@
-Feature Extraction
+Feature Extraction and Crawling of reviews from YELP
+
+
+
+The current version is not in a useable format. I have hard coded some of the values.
+Plus there are two main classes , one that does recomendation from the database and the other uses yelp
+
+will clean up the code and use OOPs!!
+
+Reference:
+
+Minqing Hu and Bing Liu. "Mining and Summarizing Customer Reviews."
+       Proceedings of the ACM SIGKDD International Conference on Knowledge
+       Discovery and Data Mining (KDD-2004), Aug 22-25, 2004, Seattle,
+       Washington, USA,
+
+
+HTML Parser (http://htmlparser.sourceforge.net/).
+
+Stanford Parts of Speech Tagger (http://nlp.stanford.edu/software/tagger.shtml).
+

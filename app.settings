@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<configuration>
+  <database>
+   <name>Kevin-DB1</name>
+   <protocol>jdbc:mysql</protocol>
+   <host>localhost</host>
+   <port>3306</port>
+   <schema>product_review?zeroDateTimeBehavior=convertToNull</schema>
+   <driver>com.mysql.jdbc.Driver</driver>
+   <user>root</user>
+   <password>spyi</password>
+   <pooling>
+    <maxactive>20</maxactive>
+    <maxidle>10</maxidle>
+   </pooling>
+  </database>
+</configuration>

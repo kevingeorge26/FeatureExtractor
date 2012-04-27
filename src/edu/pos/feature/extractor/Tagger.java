@@ -12,11 +12,17 @@ import edu.stanford.nlp.ling.HasWord;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
+/**
+ * @author kevin
+ * @Def
+ *returns features that are close to the positive words
+ * 
+ */
 public class Tagger
 {
 	final static  String[] desiredTags = {"NN","NNS","NNP","NNPS"};
 	final static String[] desiredProperty = {"JJ","JJR","JJS"};
-	final int DistanceSize = 5;
+	final static int DistanceSize = 5;
 
 	static Set<String> desiredTagSet = new HashSet<String>();
 	static Set<String> desiredPropertySet = new HashSet<String>();
@@ -39,7 +45,7 @@ public class Tagger
 	}
 
 
-	public void  getFeatures(Set<String> features, String contentText)
+	public  static  void getFeatures(Set<String> features, String contentText)
 	{
 
 		List<List<HasWord>> sentences = tagger.tokenizeText(new BufferedReader(new StringReader(contentText)));
@@ -53,7 +59,7 @@ public class Tagger
 	}
 
 
-	private void extractDesiredTags(ArrayList<TaggedWord> taggedSentence , Set<String> features)
+	private static  void extractDesiredTags(ArrayList<TaggedWord> taggedSentence , Set<String> features)
 	{		
 		int size = taggedSentence.size();
 
@@ -74,7 +80,7 @@ public class Tagger
 		}
 	}
 
-	private boolean checkifPositive(ArrayList<TaggedWord> tSentence,int index, int size)
+	private static boolean checkifPositive(ArrayList<TaggedWord> tSentence,int index, int size)
 	{
 		boolean isPositive = false;
 		int j , endPoint;

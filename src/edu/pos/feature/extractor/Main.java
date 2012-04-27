@@ -8,6 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
+
+import edu.commons.aider.sql.DBAider;
+import edu.commons.aider.sql.DataSet;
+import edu.commons.aider.sql.SettingsLoader;
+import edu.pos.feature.FeatureItemSet;
+import edu.pos.feature.store.Store;
+import edu.pos.feature.user.User;
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.ling.HasWord;
@@ -15,19 +25,66 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
 //left3words-wsj-0-18.tagger.
 
-public class Main {
+public class Main
+{
+	 private static Logger logger 	= Logger.getLogger(Main.class.getName());
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception
 	{
-		Tagger tagger =  new Tagger();
-		Set<String> features = new HashSet<String>();
-		tagger.getFeatures(features, "1207, 1205, 83, 2006-12-27, five, Very Satisfied -- I have ordered many, many ink cartridges from 123inkjets.com over the past 3 years for 3 different Epson printers and have always had excellent service. The product has consistently been as good or better than OEM at up to 70% below retail cost. Shiping is always fast. Communication is always prompt. Their customer service people are always friendly and will do whatever it takes to satisfy. And, what is amazing, they regularly offer big discounts that mean big discounts from their already rock-bottom prices. Also, they carry a larger inventory than any similar company. I've done business with similar companies and can state from experience that 123inkjets is by far the best in the business., , 292470, zero, false, false");
+		if(args.length != 1)
+			throw new IllegalArgumentException("pass only the store id as the argument");
 		
-		System.out.println(features);
+		String storeID = args[0];
+		Set<String> recommenedUser = new HashSet<String>();
+		
+		BasicConfigurator.configure();
+		
+		SettingsLoader settings = new SettingsLoader("app.settings");
+		DBAider.init(settings);
+		
+		Store store = new Store(storeID);
+		Set<FeatureItemSet> storeFeature = store.getFeatureForStoreFromDB();
+		logger.debug("**********" + storeFeature);
+		
 
+		
+		
+		// new users set
+		String query2 = "select reviewer_id from review where rating=? and store_id <> ? group by (reviewer_id) having count(reviewer_id)>7";
+		DataSet ds2  = DBAider.read(query2, "five",storeID);
+		int temp2 = ds2.rowSize();
+		
+		for(int j = 0 ; j < temp2 ; j++ )
+		{
+			String toCheckUser = ds2.getValue(j, "reviewer_id");
+			User user = new User(toCheckUser);
+			
+			if(user.probableCustomer(storeFeature, 2))
+			{
+				recommenedUser.add(toCheckUser);
+			}
+		}
+		
+		logger.debug(recommenedUser.toString());
+		
+		
+		
+		
 	}
 
 }
+
+
+
+//String query1 = "select distinct reviewer_id from review where store_id=?";
+//DataSet ds1  = DBAider.read(query1, siteID);
+//int temp = ds1.rowSize();
+//
+//
+//for(int i = 0 ; i < temp ; i++)
+//{
+//	storeUsers.add(ds1.getValue(i, "reviewer_id"));
+//}
